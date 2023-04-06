@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 01:59:02 by idelfag           #+#    #+#             */
-/*   Updated: 2023/03/14 08:49:01 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/04/06 10:45:38 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ void	start(char **av, char **env, t_vars *vars)
 	}
 	vars->paths = get_path(env);
 	if (!vars->paths)
-		error("command not found\ncommand not found\n",127);
+		error("path is empty",1);
 	if (pipe(vars->fd) == -1)
 		error("Pipe failed\n", 1);
 }

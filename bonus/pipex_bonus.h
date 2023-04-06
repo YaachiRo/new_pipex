@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 01:58:54 by idelfag           #+#    #+#             */
-/*   Updated: 2023/03/14 11:56:36 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/04/06 10:47:48 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,5 @@ typedef struct s_var
 }			t_var;
 
 void		child_process(t_var *var, int ac, char **av);
-void		second_child(t_var *var,int ac, char **av);
-char		*get_command(char **paths, char *cmd);
-void		error(char *str, int i);
 
 #endif

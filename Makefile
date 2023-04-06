@@ -1,8 +1,8 @@
 
 NAME = pipex
 
-SRCS =	bonus/main.c 		\
-		bonus/childs.c 		\
+SRCS =	mandatory/main.c 		\
+		mandatory/childs.c 		\
 	 	tools/ft_strlcpy.c		\
 		tools/ft_split.c		\
 		tools/ft_strlen.c		\

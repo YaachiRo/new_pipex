@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 01:59:02 by idelfag           #+#    #+#             */
-/*   Updated: 2023/03/14 11:50:57 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/04/06 10:44:59 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	start(int ac, char **av, char **env, t_var *var)
 	var->old_fd = var->in_file;
 	var->paths = get_path(env);
 	if (var->paths == NULL)
-		error("command not found\n", 127);
+		error("path is empty\n", 1);
 }
 
 int	main(int ac, char **av, char **env)
@@ -94,10 +94,12 @@ int	main(int ac, char **av, char **env)
 			child_process(&var, ac, av);
 		else
 		{
-			waitpid(var.pid, NULL, 0);
+			waitpid(var.pid, &var.status, 0);
 			close(var.fd[1]);
 			var.old_fd = var.fd[0];
 			var.index++;
 		}
 	}
+	if (WIFEXITED(var.status))
+		exit(WEXITSTATUS(var.status));
 }

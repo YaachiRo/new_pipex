@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/11 02:19:37 by idelfag           #+#    #+#             */
-/*   Updated: 2023/03/14 08:46:11 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/04/06 10:41:21 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ void	first_child(t_vars *vars, char **av)
 		if (!access(vars->cmd_args[0], X_OK))
 			vars->cmd_path = vars->cmd_args[0];
 		else
+		{
 			perror("");
+			exit(1);
+		}
 	}
 	else
 		vars->cmd_path = get_command(vars->paths, vars->cmd_args[0]);
@@ -43,7 +46,10 @@ void	second_child(t_vars *vars, char **av)
 		if (!access(vars->cmd_args[0], X_OK))
 			vars->cmd_path = vars->cmd_args[0];
 		else
-			error("command not found\n", 127);
+		{
+			perror("");
+			exit(1);
+		}
 	}
 	else
 		vars->cmd_path = get_command(vars->paths, vars->cmd_args[0]);
