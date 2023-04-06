@@ -13,7 +13,7 @@
 #ifndef PIPEX_BONUS_H
 # define PIPEX_BONUS_H
 
-# include "../tools/tools.h"
+#include "../tools/tools.h"
 # include <fcntl.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -21,7 +21,7 @@
 # include <errno.h>
 # include <sys/wait.h>
 
-typedef struct s_vars
+typedef struct s_var
 {
 	int		fd[2];
 	int		in_file;
@@ -34,11 +34,11 @@ typedef struct s_vars
 	int status;
 	int index;
 	int old_fd;
-}			t_vars;
+}			t_var;
 
-void		child_process(t_vars *vars, char **av, int index);
+void		child_process(t_var *var, int ac, char **av);
+void		second_child(t_var *var,int ac, char **av);
 char		*get_command(char **paths, char *cmd);
-void		second_child(t_vars *vars, int ac, char **av);
 void		error(char *str, int i);
 
 #endif

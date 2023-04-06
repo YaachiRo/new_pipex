@@ -49,7 +49,7 @@ char	*get_command(char **paths, char *cmd)
 		temp = ft_strjoin(paths[i], "/");
 		command = ft_strjoin(temp, cmd);
 		free(temp);
-		if (!access(command, X_OK))
+		if (!access(command, F_OK))
 			return (command);
 		free(command);
 		i++;
@@ -57,59 +57,47 @@ char	*get_command(char **paths, char *cmd)
 	return (NULL);
 }
 
-void	start(int ac, char **av, char **env, t_vars *vars)
+void	start(int ac, char **av, char **env, t_var *var)
 {
-	vars->env = env;
-	vars->in_file = open(av[1], O_RDONLY);
-	vars->out_file = open(av[ac - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (vars->in_file == -1)
+	var->env = env;
+	var->in_file = open(av[1], O_RDONLY);
+	var->out_file = open(av[ac - 1], O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	if (var->in_file == -1)
 		perror("");
-	if (vars->out_file == -1)
+	if (var->out_file == -1)
 	{
 		perror("");
 		exit(1);
 	}
-	vars->paths = get_path(env);
-	if (vars->paths == NULL)
+	var->old_fd = var->in_file;
+	var->paths = get_path(env);
+	if (var->paths == NULL)
 		error("command not found\n", 127);
 }
 
 int	main(int ac, char **av, char **env)
 {
-	t_vars	vars;
+	t_var	var;
 
-	vars.index = 2;
+	var.index = 2;
 	if (ac < 5)
 		error("Arguments are not Valid\n", 1);
-	start(ac ,av , env, &vars);
-	while (vars.index < (ac - 2))
+	start(ac ,av , env, &var);
+	while (var.index <= (ac - 2))
 	{
-		if (pipe(vars.fd) == -1)
+		if (pipe(var.fd) == -1)
 			error("Pipe failed\n", 1);
-		vars.pid = fork();
-		if (vars.pid == -1)
+		var.pid = fork();
+		if (var.pid == -1)
 			error("failed to fork child process\n", 1);
-		else if (vars.pid == 0)
-			child_process(&vars, av, vars.index);
+		else if (var.pid == 0)
+			child_process(&var, ac, av);
 		else
 		{
-			waitpid(vars.pid, NULL, 0);
-			vars.index++;
+			waitpid(var.pid, NULL, 0);
+			close(var.fd[1]);
+			var.old_fd = var.fd[0];
+			var.index++;
 		}
-	}
-	if (pipe(vars.fd) == -1)
-		error("Pipe failed\n", 1);
-	vars.pid = fork();
-	if (vars.pid == -1)
-		error("failed to fork child process\n", 1);
-	else if (vars.pid == 0)
-		second_child(&vars ,ac ,av);
-	else
-	{
-		close(vars.fd[0]);
-		close(vars.fd[1]);
-		waitpid(vars.pid, &vars.status, 0);
-		if (WIFEXITED(vars.status))
-				exit(WEXITSTATUS(vars.status));
 	}
 }

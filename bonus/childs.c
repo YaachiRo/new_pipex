@@ -12,43 +12,24 @@
 
 #include "pipex_bonus.h"
 
-void	child_process(t_vars *vars, char **av, int index)
+void	child_process(t_var *var, int ac, char **av)
 {
-	vars->old_fd = dup(vars->in_file);
-	dup2(vars->in_file, 0);
-	close(vars->fd[0]);
-	dup2(vars->fd[1], 1);
-	vars->cmd_args = ft_split(av[index + 2], ' ');
-	if (ft_strnstr(vars->cmd_args[0], "./", 2))
+	dup2(var->old_fd, 0);
+	if (var->index == ac - 2)
+		dup2(var->out_file, 1);
+	else
+		dup2(var->fd[1], 1);
+	var->cmd_args = ft_split(av[var->index], ' ');
+	if (ft_strnstr(var->cmd_args[0], "./", 2))
 	{
-		if (!access(vars->cmd_args[0], X_OK))
-			vars->cmd_path = vars->cmd_args[0];
+		if (!access(var->cmd_args[0], X_OK))
+			var->cmd_path = var->cmd_args[0];
 		else
 			error("permission denied\n", 1);
 	}
 	else
-		vars->cmd_path = get_command(vars->paths, vars->cmd_args[0]);
-	if (!vars->cmd_path)
-		error("command not found\n", 127);
-	execve(vars->cmd_path, vars->cmd_args, vars->env);
-}
-
-void	second_child(t_vars *vars,int ac, char **av)
-{
-	dup2(vars->fd[0], 0);
-	close(vars->fd[1]);
-	dup2(vars->out_file, 1);
-	vars->cmd_args = ft_split(av[ac - 2], ' ');
-	if (ft_strnstr(vars->cmd_args[0], "./", 2))
-	{
-		if (!access(vars->cmd_args[0], X_OK))
-			vars->cmd_path = vars->cmd_args[0];
-		else
-			error("permission denied\n", 1);
-	}
-	else
-		vars->cmd_path = get_command(vars->paths, vars->cmd_args[0]);
-	if (!vars->cmd_path)
-		error("command not found\n", 127);
-	execve(vars->cmd_path, vars->cmd_args, vars->env);
+		var->cmd_path = get_command(var->paths, var->cmd_args[0]);
+	if (!var->cmd_path)
+		error("command not found\n", 1);
+	execve(var->cmd_path, var->cmd_args, var->env);
 }

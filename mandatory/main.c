@@ -49,7 +49,7 @@ char	*get_command(char **paths, char *cmd)
 		temp = ft_strjoin(paths[i], "/");
 		command = ft_strjoin(temp, cmd);
 		free(temp);
-		if (!access(command, X_OK))
+		if (!access(command, F_OK))
 			return (command);
 		free(command);
 		i++;
