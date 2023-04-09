@@ -13,6 +13,7 @@
 #ifndef PIPEX_BONUS_H
 # define PIPEX_BONUS_H
 
+# include "get_next_line/get_next_line.h"
 # include "../tools/tools.h"
 # include <fcntl.h>
 # include <stdio.h>
@@ -33,9 +34,13 @@ typedef struct s_var
 	char **env;
 	int status;
 	int index;
-	int old_fd;
+	int ffd;
 }			t_var;
 
 void		child_process(t_var *var, int ac, char **av);
+char		*get_command(char **paths, char *cmd);
+char		**get_path(char **env);
+void		error(char *str, int i);
+void 		here_doc(int ac, char **av, char **env);
 
 #endif

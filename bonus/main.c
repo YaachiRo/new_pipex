@@ -69,7 +69,7 @@ void	start(int ac, char **av, char **env, t_var *var)
 		perror("");
 		exit(1);
 	}
-	var->old_fd = var->in_file;
+	var->ffd = var->in_file;
 	var->paths = get_path(env);
 	if (var->paths == NULL)
 		error("path is empty\n", 1);
@@ -80,6 +80,8 @@ int	main(int ac, char **av, char **env)
 	t_var	var;
 
 	var.index = 2;
+	if (ft_strnstr(av[1], "here_doc", 8))
+		here_doc(ac ,av, env);
 	if (ac < 5)
 		error("Arguments are not Valid\n", 1);
 	start(ac ,av , env, &var);
@@ -96,7 +98,7 @@ int	main(int ac, char **av, char **env)
 		{
 			waitpid(var.pid, &var.status, 0);
 			close(var.fd[1]);
-			var.old_fd = var.fd[0];
+			var.ffd = var.fd[0];
 			var.index++;
 		}
 	}
