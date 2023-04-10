@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 01:59:02 by idelfag           #+#    #+#             */
-/*   Updated: 2023/04/06 10:44:59 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/04/10 09:55:58 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,18 +73,18 @@ void	start(int ac, char **av, char **env, t_var *var)
 	var->paths = get_path(env);
 	if (var->paths == NULL)
 		error("path is empty\n", 1);
+	var->index = 2;
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_var	var;
 
-	var.index = 2;
-	if (ft_strnstr(av[1], "here_doc", 8))
-		here_doc(ac ,av, env);
+	if (!ft_strncmp(av[1], "here_doc", 8))
+		here_doc(ac, av, env);
 	if (ac < 5)
 		error("Arguments are not Valid\n", 1);
-	start(ac ,av , env, &var);
+	start(ac, av, env, &var);
 	while (var.index <= (ac - 2))
 	{
 		if (pipe(var.fd) == -1)
@@ -96,12 +96,12 @@ int	main(int ac, char **av, char **env)
 			child_process(&var, ac, av);
 		else
 		{
-			waitpid(var.pid, &var.status, 0);
-			close(var.fd[1]);
+			(waitpid(var.pid, &var.status, 0), close(var.fd[1]));
 			var.ffd = var.fd[0];
 			var.index++;
 		}
 	}
+	system("leaks pipex");
 	if (WIFEXITED(var.status))
 		exit(WEXITSTATUS(var.status));
 }

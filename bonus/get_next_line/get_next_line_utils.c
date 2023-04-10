@@ -6,11 +6,9 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 05:14:08 by idelfag           #+#    #+#             */
-/*   Updated: 2022/12/18 08:56:51 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/04/09 16:18:37 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-# include <stdint.h>
 
 #include "get_next_line.h"
 

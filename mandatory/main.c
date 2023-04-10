@@ -6,7 +6,7 @@
 /*   By: idelfag <idelfag@student.1337.ma>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/10 01:59:02 by idelfag           #+#    #+#             */
-/*   Updated: 2023/04/06 10:45:38 by idelfag          ###   ########.fr       */
+/*   Updated: 2023/04/10 09:54:56 by idelfag          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ char	*get_command(char **paths, char *cmd)
 	return (NULL);
 }
 
-void	start(char **av, char **env, t_vars *vars)
+void	start(int ac, char **av, char **env, t_vars *vars)
 {
+	if (ac != 5)
+		error("arguments are not valid\n", 1);
 	vars->env = env;
 	vars->in_file = open(av[1], O_RDONLY);
 	vars->out_file = open(av[4], O_CREAT | O_WRONLY | O_TRUNC, 0644);
@@ -71,7 +73,7 @@ void	start(char **av, char **env, t_vars *vars)
 	}
 	vars->paths = get_path(env);
 	if (!vars->paths)
-		error("path is empty",1);
+		error("path is empty", 1);
 	if (pipe(vars->fd) == -1)
 		error("Pipe failed\n", 1);
 }
@@ -80,17 +82,12 @@ int	main(int ac, char **av, char **env)
 {
 	t_vars	vars;
 
-	if (ac != 5)
-		error("arguments are not valid\n", 1);
-	start(av, env, &vars);
+	start(ac, av, env, &vars);
 	vars.pid_1 = fork();
 	if (vars.pid_1 == -1)
 		error("Failed to fork first child\n", 1);
-	if (vars.pid_1 == 0)
-	{
-		if (vars.in_file != -1)
-			first_child(&vars, av);
-	}
+	if (vars.pid_1 == 0 && vars.in_file != -1)
+		first_child(&vars, av);
 	else
 	{
 		vars.pid_2 = fork();
@@ -102,11 +99,9 @@ int	main(int ac, char **av, char **env)
 		{
 			close(vars.fd[0]);
 			close(vars.fd[1]);
-			waitpid(vars.pid_1 ,NULL, 0);
-			waitpid(vars.pid_2 ,&vars.status,0);
-			if (WIFEXITED(vars.status))
-				exit(WEXITSTATUS(vars.status));
+			waitpid(vars.pid_2, &vars.status, 0);
 		}
 	}
-	return (0);
+	if (WIFEXITED(vars.status))
+		exit(WEXITSTATUS(vars.status));
 }
